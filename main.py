@@ -262,6 +262,7 @@ reifev['Index'] = reifev['Index'].replace('', -1) # -1 for outcome selection sta
 reifev['Index'] = reifev['Index'].astype(int)
 # (warnings here can be ignored. In fact, merger by Index are (most likely) not needed, as long as price values (data) are unique
 # within participant and round. To be on the safe side, we also use Index as the last merger key)
+reifev.to_csv('reifev.csv', index=False)
 
 # make sure values for merger in the main file are of same type
 dfsubj['participant.code'] = dfsubj['participant.code'].astype(str)
@@ -298,5 +299,5 @@ workout=workdf.drop(ix,axis=0) # keeping only relevant rows
 # workout.drop_duplicates(subset = ("data"), keep = False, inplace = True)
 
 # 9. Saving output
-workout.to_csv('/home/albelix/Documents/Reiffeisen/workout.csv', index=False)
+workout.to_csv('workout.csv', index=False)
 print("mission accomplished")
