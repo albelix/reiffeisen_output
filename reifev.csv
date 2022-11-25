@@ -1,83 +1,83 @@
 participant.code,owner__session__code,round,owner__volatility,name,timestamp,unix_timestamp,secs_since_round_starts,body,data,Index,slider_value,clicked_volatility
-03uv6wi9,w326f36h,1,0.3,Decision_starts,2021-11-08 10:04:17.282974+00:00,1636365857,0,{'secs_since_round_starts': 0},,-1,,
-03uv6wi9,w326f36h,1,0.3,Decision_volatility_changed,2021-11-08 10:04:29.024851+00:00,1636365869,12,"{'volatility': 0, 'old_volatility': None, 'secs_since_round_starts': 12}",,-1,,0.0
-03uv6wi9,w326f36h,1,0.3,Decision_volatility_changed,2021-11-08 10:04:36.051948+00:00,1636365876,19,"{'volatility': 6, 'old_volatility': 0, 'secs_since_round_starts': 19}",,-1,,6.0
-03uv6wi9,w326f36h,1,0.3,Decision_volatility_changed,2021-11-08 10:04:41.264227+00:00,1636365881,24,"{'volatility': 10, 'old_volatility': 6, 'secs_since_round_starts': 24}",,-1,,10.0
-03uv6wi9,w326f36h,1,0.3,Decision_volatility_changed,2021-11-08 10:04:51.602413+00:00,1636365891,34,"{'volatility': 6, 'old_volatility': 10, 'secs_since_round_starts': 34}",,-1,,6.0
-03uv6wi9,w326f36h,1,0.3,Decision_ends,2021-11-08 10:05:01.030034+00:00,1636365901,44,{'secs_since_round_starts': 44},,-1,,
-03uv6wi9,w326f36h,1,0.3,Trade_starts,2021-11-08 10:05:02.919497+00:00,1636365902,0,"{'currentPrice': 101.319, 'priceIndex': 10, 'secs_since_round_starts': 0}",101.319,10,,
-03uv6wi9,w326f36h,1,0.3,sharpChangeDetected,2021-11-08 10:05:39.210269+00:00,1636365939,36,"{'value': 46.156, 'position': 75, 'currentPrice': 119.415, 'priceIndex': 80, 'secs_since_round_starts': 36}",119.415,80,,
-03uv6wi9,w326f36h,1,0.3,sharpChangeDetected,2021-11-08 10:05:55.049343+00:00,1636365955,52,"{'value': 19.973, 'position': 105, 'currentPrice': 50.87, 'priceIndex': 110, 'secs_since_round_starts': 52}",50.87,110,,
-03uv6wi9,w326f36h,1,0.3,Trade_ends,2021-11-08 10:07:08.978626+00:00,1636366028,126,"{'currentPrice': 35.79, 'priceIndex': 250, 'secs_since_round_starts': 126}",35.79,250,,
-03uv6wi9,w326f36h,2,0.5,Decision_starts,2021-11-08 10:07:18.518173+00:00,1636366038,0,{'secs_since_round_starts': 0},,-1,,
-03uv6wi9,w326f36h,2,0.5,Decision_volatility_changed,2021-11-08 10:07:27.966532+00:00,1636366047,9,"{'volatility': 10, 'old_volatility': None, 'secs_since_round_starts': 9}",,-1,,10.0
-03uv6wi9,w326f36h,2,0.5,Trade_starts,2021-11-08 10:07:31.605691+00:00,1636366051,0,"{'currentPrice': 110.04, 'priceIndex': 10, 'secs_since_round_starts': 0}",110.04,10,,
-03uv6wi9,w326f36h,2,0.5,slider value changed,2021-11-08 10:07:49.373198+00:00,1636366069,18,"{'sliderValue': 1, 'currentPrice': 135.528, 'priceIndex': 40, 'secs_since_round_starts': 18}",135.528,40,1.0,
-03uv6wi9,w326f36h,2,0.5,slider value changed,2021-11-08 10:07:53.661270+00:00,1636366073,22,"{'sliderValue': 0, 'currentPrice': 155.583, 'priceIndex': 50, 'secs_since_round_starts': 22}",155.583,50,0.0,
-03uv6wi9,w326f36h,2,0.5,show confirming dialog,2021-11-08 10:07:53.714854+00:00,1636366073,22,"{'currentPrice': 155.583, 'priceIndex': 50, 'secs_since_round_starts': 22}",155.583,50,,
-03uv6wi9,w326f36h,3,0.5,Decision_starts,2021-11-08 10:08:05.437494+00:00,1636366085,0,{'secs_since_round_starts': 0},,-1,,
-03uv6wi9,w326f36h,3,0.5,Decision_volatility_changed,2021-11-08 10:08:08.927942+00:00,1636366088,4,"{'volatility': 10, 'old_volatility': None, 'secs_since_round_starts': 4}",,-1,,10.0
-03uv6wi9,w326f36h,3,0.5,Trade_starts,2021-11-08 10:08:12.814295+00:00,1636366092,0,"{'currentPrice': 18.615, 'priceIndex': 10, 'secs_since_round_starts': 0}",18.615,10,,
-03uv6wi9,w326f36h,3,0.5,slider value changed,2021-11-08 10:09:43.858308+00:00,1636366183,91,"{'sliderValue': 0, 'currentPrice': 112.41, 'priceIndex': 180, 'secs_since_round_starts': 91}",112.41,180,0.0,
-03uv6wi9,w326f36h,3,0.5,show confirming dialog,2021-11-08 10:09:43.928626+00:00,1636366183,91,"{'currentPrice': 112.41, 'priceIndex': 180, 'secs_since_round_starts': 91}",112.41,180,,
-03uv6wi9,w326f36h,3,0.5,Continue keeping,2021-11-08 10:09:45.593327+00:00,1636366185,93,"{'currentPrice': 112.41, 'priceIndex': 180, 'secs_since_round_starts': 93}",112.41,180,,
-03uv6wi9,w326f36h,3,0.5,slider value changed,2021-11-08 10:09:46.263117+00:00,1636366186,93,"{'sliderValue': 1, 'currentPrice': 112.41, 'priceIndex': 180, 'secs_since_round_starts': 93}",112.41,180,1.0,
-03uv6wi9,w326f36h,3,0.5,slider value changed,2021-11-08 10:09:48.999950+00:00,1636366188,96,"{'sliderValue': 0, 'currentPrice': 129.951, 'priceIndex': 190, 'secs_since_round_starts': 96}",129.951,190,0.0,
-03uv6wi9,w326f36h,3,0.5,show confirming dialog,2021-11-08 10:09:49.056172+00:00,1636366189,96,"{'currentPrice': 129.951, 'priceIndex': 190, 'secs_since_round_starts': 96}",129.951,190,,
-03uv6wi9,w326f36h,3,0.5,Sell,2021-11-08 10:09:50.369373+00:00,1636366190,98,"{'currentPrice': 129.951, 'priceIndex': 190, 'secs_since_round_starts': 98}",129.951,190,,
-03uv6wi9,w326f36h,3,0.5,Trade_ends,2021-11-08 10:09:50.426500+00:00,1636366190,98,"{'currentPrice': 129.951, 'priceIndex': 190, 'secs_since_round_starts': 98}",129.951,190,,
-03uv6wi9,w326f36h,4,0.1,Decision_starts,2021-11-08 10:09:54.558568+00:00,1636366194,0,{'secs_since_round_starts': 0},,-1,,
-03uv6wi9,w326f36h,4,0.1,Decision_volatility_changed,2021-11-08 10:09:56.679800+00:00,1636366196,2,"{'volatility': 0, 'old_volatility': None, 'secs_since_round_starts': 2}",,-1,,0.0
-03uv6wi9,w326f36h,4,0.1,Decision_volatility_changed,2021-11-08 10:09:58.704674+00:00,1636366198,4,"{'volatility': 1, 'old_volatility': 0, 'secs_since_round_starts': 4}",,-1,,1.0
-03uv6wi9,w326f36h,4,0.1,Decision_volatility_changed,2021-11-08 10:09:59.335890+00:00,1636366199,5,"{'volatility': 3, 'old_volatility': 1, 'secs_since_round_starts': 5}",,-1,,3.0
-03uv6wi9,w326f36h,4,0.1,Decision_volatility_changed,2021-11-08 10:10:00.097552+00:00,1636366200,6,"{'volatility': 2, 'old_volatility': 3, 'secs_since_round_starts': 6}",,-1,,2.0
-03uv6wi9,w326f36h,4,0.1,Trade_starts,2021-11-08 10:10:02.790319+00:00,1636366202,0,"{'currentPrice': 102.135, 'priceIndex': 10, 'secs_since_round_starts': 0}",102.135,10,,
-03uv6wi9,w326f36h,4,0.1,slider value changed,2021-11-08 10:10:41.072877+00:00,1636366241,38,"{'sliderValue': 0, 'currentPrice': 111, 'priceIndex': 80, 'secs_since_round_starts': 38}",111.0,80,0.0,
-03uv6wi9,w326f36h,4,0.1,show confirming dialog,2021-11-08 10:10:41.128641+00:00,1636366241,38,"{'currentPrice': 111, 'priceIndex': 80, 'secs_since_round_starts': 38}",111.0,80,,
-03uv6wi9,w326f36h,4,0.1,Sell,2021-11-08 10:10:41.986285+00:00,1636366241,39,"{'currentPrice': 111, 'priceIndex': 80, 'secs_since_round_starts': 39}",111.0,80,,
-03uv6wi9,w326f36h,4,0.1,Trade_ends,2021-11-08 10:10:42.041349+00:00,1636366242,39,"{'currentPrice': 111, 'priceIndex': 80, 'secs_since_round_starts': 39}",111.0,80,,
-03uv6wi9,w326f36h,5,0.15,Decision_starts,2021-11-08 10:10:49.597633+00:00,1636366249,0,{'secs_since_round_starts': 0},,-1,,
-03uv6wi9,w326f36h,5,0.15,Decision_volatility_changed,2021-11-08 10:10:50.396498+00:00,1636366250,1,"{'volatility': 3, 'old_volatility': None, 'secs_since_round_starts': 1}",,-1,,3.0
-03uv6wi9,w326f36h,5,0.15,Decision_ends,2021-11-08 10:10:52.178382+00:00,1636366252,3,{'secs_since_round_starts': 3},,-1,,
-03uv6wi9,w326f36h,5,0.15,Trade_starts,2021-11-08 10:10:53.230169+00:00,1636366253,0,"{'currentPrice': 102.843, 'priceIndex': 10, 'secs_since_round_starts': 0}",102.843,10,,
-03uv6wi9,w326f36h,5,0.15,sharpChangeDetected,2021-11-08 10:11:13.780841+00:00,1636366273,21,"{'value': 79.857, 'position': 40, 'currentPrice': 119.09, 'priceIndex': 50, 'secs_since_round_starts': 21}",119.09,50,,
-03uv6wi9,w326f36h,5,0.15,slider value changed,2021-11-08 10:12:09.301434+00:00,1636366329,76,"{'sliderValue': 1, 'currentPrice': 102.829, 'priceIndex': 150, 'secs_since_round_starts': 76}",102.829,150,1.0,
-03uv6wi9,w326f36h,5,0.15,slider value changed,2021-11-08 10:12:24.060439+00:00,1636366344,91,"{'sliderValue': 0, 'currentPrice': 109.505, 'priceIndex': 180, 'secs_since_round_starts': 91}",109.505,180,0.0,
-03uv6wi9,w326f36h,5,0.15,show confirming dialog,2021-11-08 10:12:24.133269+00:00,1636366344,91,"{'currentPrice': 109.505, 'priceIndex': 180, 'secs_since_round_starts': 91}",109.505,180,,
-03uv6wi9,w326f36h,5,0.15,Sell,2021-11-08 10:12:24.965563+00:00,1636366344,92,"{'currentPrice': 109.505, 'priceIndex': 180, 'secs_since_round_starts': 92}",109.505,180,,
-03uv6wi9,w326f36h,5,0.15,Trade_ends,2021-11-08 10:12:25.023816+00:00,1636366345,92,"{'currentPrice': 109.505, 'priceIndex': 180, 'secs_since_round_starts': 92}",109.505,180,,
-03uv6wi9,w326f36h,6,0.5,Decision_starts,2021-11-08 10:12:28.363971+00:00,1636366348,0,{'secs_since_round_starts': 0},,-1,,
-03uv6wi9,w326f36h,6,0.5,Decision_volatility_changed,2021-11-08 10:12:30.060960+00:00,1636366350,2,"{'volatility': 10, 'old_volatility': None, 'secs_since_round_starts': 2}",,-1,,10.0
-03uv6wi9,w326f36h,6,0.5,Trade_starts,2021-11-08 10:12:32.745135+00:00,1636366352,0,"{'currentPrice': 108.161, 'priceIndex': 10, 'secs_since_round_starts': 0}",108.161,10,,
-03uv6wi9,w326f36h,6,0.5,sharpChangeDetected,2021-11-08 10:12:42.737095+00:00,1636366362,10,"{'value': 22.473, 'position': 27, 'currentPrice': 105.715, 'priceIndex': 30, 'secs_since_round_starts': 10}",105.715,30,,
-03uv6wi9,w326f36h,6,0.5,sharpChangeDetected,2021-11-08 10:12:58.478042+00:00,1636366378,26,"{'value': 30.965, 'position': 57, 'currentPrice': 26.292, 'priceIndex': 60, 'secs_since_round_starts': 26}",26.292,60,,
-03uv6wi9,w326f36h,6,0.5,sharpChangeDetected,2021-11-08 10:13:08.991644+00:00,1636366388,36,"{'value': 7.988, 'position': 79, 'currentPrice': 37.564, 'priceIndex': 80, 'secs_since_round_starts': 36}",37.564,80,,
-03uv6wi9,w326f36h,6,0.5,sharpChangeDetected,2021-11-08 10:13:30.185514+00:00,1636366410,58,"{'value': 2.193, 'position': 111, 'currentPrice': 10.458, 'priceIndex': 120, 'secs_since_round_starts': 58}",10.458,120,,
-03uv6wi9,w326f36h,6,0.5,Trade_ends,2021-11-08 10:14:38.869923+00:00,1636366478,126,"{'currentPrice': 5.412, 'priceIndex': 250, 'secs_since_round_starts': 126}",5.412,250,,
-03uv6wi9,w326f36h,7,0.45,Decision_starts,2021-11-08 10:14:43.184875+00:00,1636366483,0,{'secs_since_round_starts': 0},,-1,,
-03uv6wi9,w326f36h,7,0.45,Decision_volatility_changed,2021-11-08 10:14:44.504657+00:00,1636366484,1,"{'volatility': 9, 'old_volatility': None, 'secs_since_round_starts': 1}",,-1,,9.0
-03uv6wi9,w326f36h,7,0.45,Trade_starts,2021-11-08 10:14:47.202122+00:00,1636366487,0,"{'currentPrice': 111.07, 'priceIndex': 10, 'secs_since_round_starts': 0}",111.07,10,,
-03uv6wi9,w326f36h,7,0.45,slider value changed,2021-11-08 10:14:54.295797+00:00,1636366494,7,"{'sliderValue': 0, 'currentPrice': 118.174, 'priceIndex': 20, 'secs_since_round_starts': 7}",118.174,20,0.0,
-03uv6wi9,w326f36h,7,0.45,show confirming dialog,2021-11-08 10:14:54.370565+00:00,1636366494,7,"{'currentPrice': 118.174, 'priceIndex': 20, 'secs_since_round_starts': 7}",118.174,20,,
-03uv6wi9,w326f36h,8,0.2,Decision_starts,2021-11-08 10:14:58.817745+00:00,1636366498,0,{'secs_since_round_starts': 0},,-1,,
-03uv6wi9,w326f36h,8,0.2,Decision_volatility_changed,2021-11-08 10:15:00.605660+00:00,1636366500,2,"{'volatility': 4, 'old_volatility': None, 'secs_since_round_starts': 2}",,-1,,4.0
-03uv6wi9,w326f36h,8,0.2,Trade_starts,2021-11-08 10:15:04.163420+00:00,1636366504,0,"{'currentPrice': 98.807, 'priceIndex': 10, 'secs_since_round_starts': 0}",98.807,10,,
-03uv6wi9,w326f36h,8,0.2,sharpChangeDetected,2021-11-08 10:15:08.999782+00:00,1636366508,5,"{'value': 56.058, 'position': 11, 'currentPrice': 98.807, 'priceIndex': 20, 'secs_since_round_starts': 5}",98.807,20,,
-03uv6wi9,w326f36h,8,0.2,sharpChangeDetected,2021-11-08 10:15:29.950767+00:00,1636366529,26,"{'value': 39.493, 'position': 57, 'currentPrice': 69.693, 'priceIndex': 60, 'secs_since_round_starts': 26}",69.693,60,,
-03uv6wi9,w326f36h,8,0.2,sharpChangeDetected,2021-11-08 10:16:43.822475+00:00,1636366603,100,"{'value': 35.338, 'position': 194, 'currentPrice': 60.98, 'priceIndex': 200, 'secs_since_round_starts': 100}",60.98,200,,
-03uv6wi9,w326f36h,8,0.2,Trade_ends,2021-11-08 10:17:10.321159+00:00,1636366630,126,"{'currentPrice': 41.587, 'priceIndex': 250, 'secs_since_round_starts': 126}",41.587,250,,
-03uv6wi9,w326f36h,9,0.3,Decision_starts,2021-11-08 11:15:30.470222+00:00,1636370130,0,{'secs_since_round_starts': 0},,-1,,
-03uv6wi9,w326f36h,9,0.3,Decision_volatility_changed,2021-11-08 11:15:37.902753+00:00,1636370137,7,"{'volatility': 4, 'old_volatility': None, 'secs_since_round_starts': 7}",,-1,,4.0
-03uv6wi9,w326f36h,9,0.3,Decision_volatility_changed,2021-11-08 11:15:39.307444+00:00,1636370139,9,"{'volatility': 6, 'old_volatility': 4, 'secs_since_round_starts': 9}",,-1,,6.0
-03uv6wi9,w326f36h,9,0.3,Trade_starts,2021-11-08 11:15:41.562905+00:00,1636370141,0,"{'currentPrice': 98.514, 'priceIndex': 10, 'secs_since_round_starts': 0}",98.514,10,,
-03uv6wi9,w326f36h,9,0.3,slider value changed,2021-11-08 11:16:05.159462+00:00,1636370165,24,"{'sliderValue': 1, 'currentPrice': 117.577, 'priceIndex': 50, 'secs_since_round_starts': 24}",117.577,50,1.0,
-03uv6wi9,w326f36h,9,0.3,slider value changed,2021-11-08 11:16:08.620911+00:00,1636370168,27,"{'sliderValue': 0, 'currentPrice': 114.204, 'priceIndex': 60, 'secs_since_round_starts': 27}",114.204,60,0.0,
-03uv6wi9,w326f36h,9,0.3,show confirming dialog,2021-11-08 11:16:08.714929+00:00,1636370168,27,"{'currentPrice': 114.204, 'priceIndex': 60, 'secs_since_round_starts': 27}",114.204,60,,
-03uv6wi9,w326f36h,9,0.3,Sell,2021-11-08 11:16:09.416995+00:00,1636370169,28,"{'currentPrice': 114.204, 'priceIndex': 60, 'secs_since_round_starts': 28}",114.204,60,,
-03uv6wi9,w326f36h,10,0.25,Decision_starts,2021-11-08 11:16:12.605125+00:00,1636370172,0,{'secs_since_round_starts': 0},,-1,,
-03uv6wi9,w326f36h,10,0.25,Decision_volatility_changed,2021-11-08 11:16:17.757691+00:00,1636370177,5,"{'volatility': 4, 'old_volatility': None, 'secs_since_round_starts': 5}",,-1,,4.0
-03uv6wi9,w326f36h,10,0.25,Decision_volatility_changed,2021-11-08 11:16:19.362242+00:00,1636370179,7,"{'volatility': 5, 'old_volatility': 4, 'secs_since_round_starts': 7}",,-1,,5.0
-03uv6wi9,w326f36h,10,0.25,Decision_ends,2021-11-08 11:16:20.089572+00:00,1636370180,8,{'secs_since_round_starts': 8},,-1,,
-03uv6wi9,w326f36h,10,0.25,Trade_starts,2021-11-08 11:16:21.165725+00:00,1636370181,0,"{'currentPrice': 112.768, 'priceIndex': 10, 'secs_since_round_starts': 0}",112.768,10,,
-03uv6wi9,w326f36h,10,0.25,slider value changed,2021-11-08 11:16:23.711038+00:00,1636370183,2,"{'sliderValue': 0, 'currentPrice': 112.768, 'priceIndex': 10, 'secs_since_round_starts': 2}",112.768,10,0.0,
-03uv6wi9,w326f36h,10,0.25,show confirming dialog,2021-11-08 11:16:23.803636+00:00,1636370183,2,"{'currentPrice': 112.768, 'priceIndex': 10, 'secs_since_round_starts': 2}",112.768,10,,
+03uv6wi9,w326f36h,1,0.3,Decision_starts,2021-11-08 10:04:17.282974+00:00,1636365857,0,{'secs_since_round_starts': 0},nan,nan,,
+03uv6wi9,w326f36h,1,0.3,Decision_volatility_changed,2021-11-08 10:04:29.024851+00:00,1636365869,12,"{'volatility': 0, 'old_volatility': None, 'secs_since_round_starts': 12}",nan,nan,,0.0
+03uv6wi9,w326f36h,1,0.3,Decision_volatility_changed,2021-11-08 10:04:36.051948+00:00,1636365876,19,"{'volatility': 6, 'old_volatility': 0, 'secs_since_round_starts': 19}",nan,nan,,6.0
+03uv6wi9,w326f36h,1,0.3,Decision_volatility_changed,2021-11-08 10:04:41.264227+00:00,1636365881,24,"{'volatility': 10, 'old_volatility': 6, 'secs_since_round_starts': 24}",nan,nan,,10.0
+03uv6wi9,w326f36h,1,0.3,Decision_volatility_changed,2021-11-08 10:04:51.602413+00:00,1636365891,34,"{'volatility': 6, 'old_volatility': 10, 'secs_since_round_starts': 34}",nan,nan,,6.0
+03uv6wi9,w326f36h,1,0.3,Decision_ends,2021-11-08 10:05:01.030034+00:00,1636365901,44,{'secs_since_round_starts': 44},nan,nan,,
+03uv6wi9,w326f36h,1,0.3,Trade_starts,2021-11-08 10:05:02.919497+00:00,1636365902,0,"{'currentPrice': 101.319, 'priceIndex': 10, 'secs_since_round_starts': 0}",101.319,10.0,,
+03uv6wi9,w326f36h,1,0.3,sharpChangeDetected,2021-11-08 10:05:39.210269+00:00,1636365939,36,"{'value': 46.156, 'position': 75, 'currentPrice': 119.415, 'priceIndex': 80, 'secs_since_round_starts': 36}",119.415,80.0,,
+03uv6wi9,w326f36h,1,0.3,sharpChangeDetected,2021-11-08 10:05:55.049343+00:00,1636365955,52,"{'value': 19.973, 'position': 105, 'currentPrice': 50.87, 'priceIndex': 110, 'secs_since_round_starts': 52}",50.87,110.0,,
+03uv6wi9,w326f36h,1,0.3,Trade_ends,2021-11-08 10:07:08.978626+00:00,1636366028,126,"{'currentPrice': 35.79, 'priceIndex': 250, 'secs_since_round_starts': 126}",35.79,250.0,,
+03uv6wi9,w326f36h,2,0.5,Decision_starts,2021-11-08 10:07:18.518173+00:00,1636366038,0,{'secs_since_round_starts': 0},nan,nan,,
+03uv6wi9,w326f36h,2,0.5,Decision_volatility_changed,2021-11-08 10:07:27.966532+00:00,1636366047,9,"{'volatility': 10, 'old_volatility': None, 'secs_since_round_starts': 9}",nan,nan,,10.0
+03uv6wi9,w326f36h,2,0.5,Trade_starts,2021-11-08 10:07:31.605691+00:00,1636366051,0,"{'currentPrice': 110.04, 'priceIndex': 10, 'secs_since_round_starts': 0}",110.04,10.0,,
+03uv6wi9,w326f36h,2,0.5,slider value changed,2021-11-08 10:07:49.373198+00:00,1636366069,18,"{'sliderValue': 1, 'currentPrice': 135.528, 'priceIndex': 40, 'secs_since_round_starts': 18}",135.528,40.0,1.0,
+03uv6wi9,w326f36h,2,0.5,slider value changed,2021-11-08 10:07:53.661270+00:00,1636366073,22,"{'sliderValue': 0, 'currentPrice': 155.583, 'priceIndex': 50, 'secs_since_round_starts': 22}",155.583,50.0,0.0,
+03uv6wi9,w326f36h,2,0.5,show confirming dialog,2021-11-08 10:07:53.714854+00:00,1636366073,22,"{'currentPrice': 155.583, 'priceIndex': 50, 'secs_since_round_starts': 22}",155.583,50.0,,
+03uv6wi9,w326f36h,3,0.5,Decision_starts,2021-11-08 10:08:05.437494+00:00,1636366085,0,{'secs_since_round_starts': 0},nan,nan,,
+03uv6wi9,w326f36h,3,0.5,Decision_volatility_changed,2021-11-08 10:08:08.927942+00:00,1636366088,4,"{'volatility': 10, 'old_volatility': None, 'secs_since_round_starts': 4}",nan,nan,,10.0
+03uv6wi9,w326f36h,3,0.5,Trade_starts,2021-11-08 10:08:12.814295+00:00,1636366092,0,"{'currentPrice': 18.615, 'priceIndex': 10, 'secs_since_round_starts': 0}",18.615,10.0,,
+03uv6wi9,w326f36h,3,0.5,slider value changed,2021-11-08 10:09:43.858308+00:00,1636366183,91,"{'sliderValue': 0, 'currentPrice': 112.41, 'priceIndex': 180, 'secs_since_round_starts': 91}",112.41,180.0,0.0,
+03uv6wi9,w326f36h,3,0.5,show confirming dialog,2021-11-08 10:09:43.928626+00:00,1636366183,91,"{'currentPrice': 112.41, 'priceIndex': 180, 'secs_since_round_starts': 91}",112.41,180.0,,
+03uv6wi9,w326f36h,3,0.5,Continue keeping,2021-11-08 10:09:45.593327+00:00,1636366185,93,"{'currentPrice': 112.41, 'priceIndex': 180, 'secs_since_round_starts': 93}",112.41,180.0,,
+03uv6wi9,w326f36h,3,0.5,slider value changed,2021-11-08 10:09:46.263117+00:00,1636366186,93,"{'sliderValue': 1, 'currentPrice': 112.41, 'priceIndex': 180, 'secs_since_round_starts': 93}",112.41,180.0,1.0,
+03uv6wi9,w326f36h,3,0.5,slider value changed,2021-11-08 10:09:48.999950+00:00,1636366188,96,"{'sliderValue': 0, 'currentPrice': 129.951, 'priceIndex': 190, 'secs_since_round_starts': 96}",129.951,190.0,0.0,
+03uv6wi9,w326f36h,3,0.5,show confirming dialog,2021-11-08 10:09:49.056172+00:00,1636366189,96,"{'currentPrice': 129.951, 'priceIndex': 190, 'secs_since_round_starts': 96}",129.951,190.0,,
+03uv6wi9,w326f36h,3,0.5,Sell,2021-11-08 10:09:50.369373+00:00,1636366190,98,"{'currentPrice': 129.951, 'priceIndex': 190, 'secs_since_round_starts': 98}",129.951,190.0,,
+03uv6wi9,w326f36h,3,0.5,Trade_ends,2021-11-08 10:09:50.426500+00:00,1636366190,98,"{'currentPrice': 129.951, 'priceIndex': 190, 'secs_since_round_starts': 98}",129.951,190.0,,
+03uv6wi9,w326f36h,4,0.1,Decision_starts,2021-11-08 10:09:54.558568+00:00,1636366194,0,{'secs_since_round_starts': 0},nan,nan,,
+03uv6wi9,w326f36h,4,0.1,Decision_volatility_changed,2021-11-08 10:09:56.679800+00:00,1636366196,2,"{'volatility': 0, 'old_volatility': None, 'secs_since_round_starts': 2}",nan,nan,,0.0
+03uv6wi9,w326f36h,4,0.1,Decision_volatility_changed,2021-11-08 10:09:58.704674+00:00,1636366198,4,"{'volatility': 1, 'old_volatility': 0, 'secs_since_round_starts': 4}",nan,nan,,1.0
+03uv6wi9,w326f36h,4,0.1,Decision_volatility_changed,2021-11-08 10:09:59.335890+00:00,1636366199,5,"{'volatility': 3, 'old_volatility': 1, 'secs_since_round_starts': 5}",nan,nan,,3.0
+03uv6wi9,w326f36h,4,0.1,Decision_volatility_changed,2021-11-08 10:10:00.097552+00:00,1636366200,6,"{'volatility': 2, 'old_volatility': 3, 'secs_since_round_starts': 6}",nan,nan,,2.0
+03uv6wi9,w326f36h,4,0.1,Trade_starts,2021-11-08 10:10:02.790319+00:00,1636366202,0,"{'currentPrice': 102.135, 'priceIndex': 10, 'secs_since_round_starts': 0}",102.135,10.0,,
+03uv6wi9,w326f36h,4,0.1,slider value changed,2021-11-08 10:10:41.072877+00:00,1636366241,38,"{'sliderValue': 0, 'currentPrice': 111, 'priceIndex': 80, 'secs_since_round_starts': 38}",111.0,80.0,0.0,
+03uv6wi9,w326f36h,4,0.1,show confirming dialog,2021-11-08 10:10:41.128641+00:00,1636366241,38,"{'currentPrice': 111, 'priceIndex': 80, 'secs_since_round_starts': 38}",111.0,80.0,,
+03uv6wi9,w326f36h,4,0.1,Sell,2021-11-08 10:10:41.986285+00:00,1636366241,39,"{'currentPrice': 111, 'priceIndex': 80, 'secs_since_round_starts': 39}",111.0,80.0,,
+03uv6wi9,w326f36h,4,0.1,Trade_ends,2021-11-08 10:10:42.041349+00:00,1636366242,39,"{'currentPrice': 111, 'priceIndex': 80, 'secs_since_round_starts': 39}",111.0,80.0,,
+03uv6wi9,w326f36h,5,0.15,Decision_starts,2021-11-08 10:10:49.597633+00:00,1636366249,0,{'secs_since_round_starts': 0},nan,nan,,
+03uv6wi9,w326f36h,5,0.15,Decision_volatility_changed,2021-11-08 10:10:50.396498+00:00,1636366250,1,"{'volatility': 3, 'old_volatility': None, 'secs_since_round_starts': 1}",nan,nan,,3.0
+03uv6wi9,w326f36h,5,0.15,Decision_ends,2021-11-08 10:10:52.178382+00:00,1636366252,3,{'secs_since_round_starts': 3},nan,nan,,
+03uv6wi9,w326f36h,5,0.15,Trade_starts,2021-11-08 10:10:53.230169+00:00,1636366253,0,"{'currentPrice': 102.843, 'priceIndex': 10, 'secs_since_round_starts': 0}",102.843,10.0,,
+03uv6wi9,w326f36h,5,0.15,sharpChangeDetected,2021-11-08 10:11:13.780841+00:00,1636366273,21,"{'value': 79.857, 'position': 40, 'currentPrice': 119.09, 'priceIndex': 50, 'secs_since_round_starts': 21}",119.09,50.0,,
+03uv6wi9,w326f36h,5,0.15,slider value changed,2021-11-08 10:12:09.301434+00:00,1636366329,76,"{'sliderValue': 1, 'currentPrice': 102.829, 'priceIndex': 150, 'secs_since_round_starts': 76}",102.829,150.0,1.0,
+03uv6wi9,w326f36h,5,0.15,slider value changed,2021-11-08 10:12:24.060439+00:00,1636366344,91,"{'sliderValue': 0, 'currentPrice': 109.505, 'priceIndex': 180, 'secs_since_round_starts': 91}",109.505,180.0,0.0,
+03uv6wi9,w326f36h,5,0.15,show confirming dialog,2021-11-08 10:12:24.133269+00:00,1636366344,91,"{'currentPrice': 109.505, 'priceIndex': 180, 'secs_since_round_starts': 91}",109.505,180.0,,
+03uv6wi9,w326f36h,5,0.15,Sell,2021-11-08 10:12:24.965563+00:00,1636366344,92,"{'currentPrice': 109.505, 'priceIndex': 180, 'secs_since_round_starts': 92}",109.505,180.0,,
+03uv6wi9,w326f36h,5,0.15,Trade_ends,2021-11-08 10:12:25.023816+00:00,1636366345,92,"{'currentPrice': 109.505, 'priceIndex': 180, 'secs_since_round_starts': 92}",109.505,180.0,,
+03uv6wi9,w326f36h,6,0.5,Decision_starts,2021-11-08 10:12:28.363971+00:00,1636366348,0,{'secs_since_round_starts': 0},nan,nan,,
+03uv6wi9,w326f36h,6,0.5,Decision_volatility_changed,2021-11-08 10:12:30.060960+00:00,1636366350,2,"{'volatility': 10, 'old_volatility': None, 'secs_since_round_starts': 2}",nan,nan,,10.0
+03uv6wi9,w326f36h,6,0.5,Trade_starts,2021-11-08 10:12:32.745135+00:00,1636366352,0,"{'currentPrice': 108.161, 'priceIndex': 10, 'secs_since_round_starts': 0}",108.161,10.0,,
+03uv6wi9,w326f36h,6,0.5,sharpChangeDetected,2021-11-08 10:12:42.737095+00:00,1636366362,10,"{'value': 22.473, 'position': 27, 'currentPrice': 105.715, 'priceIndex': 30, 'secs_since_round_starts': 10}",105.715,30.0,,
+03uv6wi9,w326f36h,6,0.5,sharpChangeDetected,2021-11-08 10:12:58.478042+00:00,1636366378,26,"{'value': 30.965, 'position': 57, 'currentPrice': 26.292, 'priceIndex': 60, 'secs_since_round_starts': 26}",26.292,60.0,,
+03uv6wi9,w326f36h,6,0.5,sharpChangeDetected,2021-11-08 10:13:08.991644+00:00,1636366388,36,"{'value': 7.988, 'position': 79, 'currentPrice': 37.564, 'priceIndex': 80, 'secs_since_round_starts': 36}",37.564,80.0,,
+03uv6wi9,w326f36h,6,0.5,sharpChangeDetected,2021-11-08 10:13:30.185514+00:00,1636366410,58,"{'value': 2.193, 'position': 111, 'currentPrice': 10.458, 'priceIndex': 120, 'secs_since_round_starts': 58}",10.458,120.0,,
+03uv6wi9,w326f36h,6,0.5,Trade_ends,2021-11-08 10:14:38.869923+00:00,1636366478,126,"{'currentPrice': 5.412, 'priceIndex': 250, 'secs_since_round_starts': 126}",5.412,250.0,,
+03uv6wi9,w326f36h,7,0.45,Decision_starts,2021-11-08 10:14:43.184875+00:00,1636366483,0,{'secs_since_round_starts': 0},nan,nan,,
+03uv6wi9,w326f36h,7,0.45,Decision_volatility_changed,2021-11-08 10:14:44.504657+00:00,1636366484,1,"{'volatility': 9, 'old_volatility': None, 'secs_since_round_starts': 1}",nan,nan,,9.0
+03uv6wi9,w326f36h,7,0.45,Trade_starts,2021-11-08 10:14:47.202122+00:00,1636366487,0,"{'currentPrice': 111.07, 'priceIndex': 10, 'secs_since_round_starts': 0}",111.07,10.0,,
+03uv6wi9,w326f36h,7,0.45,slider value changed,2021-11-08 10:14:54.295797+00:00,1636366494,7,"{'sliderValue': 0, 'currentPrice': 118.174, 'priceIndex': 20, 'secs_since_round_starts': 7}",118.174,20.0,0.0,
+03uv6wi9,w326f36h,7,0.45,show confirming dialog,2021-11-08 10:14:54.370565+00:00,1636366494,7,"{'currentPrice': 118.174, 'priceIndex': 20, 'secs_since_round_starts': 7}",118.174,20.0,,
+03uv6wi9,w326f36h,8,0.2,Decision_starts,2021-11-08 10:14:58.817745+00:00,1636366498,0,{'secs_since_round_starts': 0},nan,nan,,
+03uv6wi9,w326f36h,8,0.2,Decision_volatility_changed,2021-11-08 10:15:00.605660+00:00,1636366500,2,"{'volatility': 4, 'old_volatility': None, 'secs_since_round_starts': 2}",nan,nan,,4.0
+03uv6wi9,w326f36h,8,0.2,Trade_starts,2021-11-08 10:15:04.163420+00:00,1636366504,0,"{'currentPrice': 98.807, 'priceIndex': 10, 'secs_since_round_starts': 0}",98.807,10.0,,
+03uv6wi9,w326f36h,8,0.2,sharpChangeDetected,2021-11-08 10:15:08.999782+00:00,1636366508,5,"{'value': 56.058, 'position': 11, 'currentPrice': 98.807, 'priceIndex': 20, 'secs_since_round_starts': 5}",98.807,20.0,,
+03uv6wi9,w326f36h,8,0.2,sharpChangeDetected,2021-11-08 10:15:29.950767+00:00,1636366529,26,"{'value': 39.493, 'position': 57, 'currentPrice': 69.693, 'priceIndex': 60, 'secs_since_round_starts': 26}",69.693,60.0,,
+03uv6wi9,w326f36h,8,0.2,sharpChangeDetected,2021-11-08 10:16:43.822475+00:00,1636366603,100,"{'value': 35.338, 'position': 194, 'currentPrice': 60.98, 'priceIndex': 200, 'secs_since_round_starts': 100}",60.98,200.0,,
+03uv6wi9,w326f36h,8,0.2,Trade_ends,2021-11-08 10:17:10.321159+00:00,1636366630,126,"{'currentPrice': 41.587, 'priceIndex': 250, 'secs_since_round_starts': 126}",41.587,250.0,,
+03uv6wi9,w326f36h,9,0.3,Decision_starts,2021-11-08 11:15:30.470222+00:00,1636370130,0,{'secs_since_round_starts': 0},nan,nan,,
+03uv6wi9,w326f36h,9,0.3,Decision_volatility_changed,2021-11-08 11:15:37.902753+00:00,1636370137,7,"{'volatility': 4, 'old_volatility': None, 'secs_since_round_starts': 7}",nan,nan,,4.0
+03uv6wi9,w326f36h,9,0.3,Decision_volatility_changed,2021-11-08 11:15:39.307444+00:00,1636370139,9,"{'volatility': 6, 'old_volatility': 4, 'secs_since_round_starts': 9}",nan,nan,,6.0
+03uv6wi9,w326f36h,9,0.3,Trade_starts,2021-11-08 11:15:41.562905+00:00,1636370141,0,"{'currentPrice': 98.514, 'priceIndex': 10, 'secs_since_round_starts': 0}",98.514,10.0,,
+03uv6wi9,w326f36h,9,0.3,slider value changed,2021-11-08 11:16:05.159462+00:00,1636370165,24,"{'sliderValue': 1, 'currentPrice': 117.577, 'priceIndex': 50, 'secs_since_round_starts': 24}",117.577,50.0,1.0,
+03uv6wi9,w326f36h,9,0.3,slider value changed,2021-11-08 11:16:08.620911+00:00,1636370168,27,"{'sliderValue': 0, 'currentPrice': 114.204, 'priceIndex': 60, 'secs_since_round_starts': 27}",114.204,60.0,0.0,
+03uv6wi9,w326f36h,9,0.3,show confirming dialog,2021-11-08 11:16:08.714929+00:00,1636370168,27,"{'currentPrice': 114.204, 'priceIndex': 60, 'secs_since_round_starts': 27}",114.204,60.0,,
+03uv6wi9,w326f36h,9,0.3,Sell,2021-11-08 11:16:09.416995+00:00,1636370169,28,"{'currentPrice': 114.204, 'priceIndex': 60, 'secs_since_round_starts': 28}",114.204,60.0,,
+03uv6wi9,w326f36h,10,0.25,Decision_starts,2021-11-08 11:16:12.605125+00:00,1636370172,0,{'secs_since_round_starts': 0},nan,nan,,
+03uv6wi9,w326f36h,10,0.25,Decision_volatility_changed,2021-11-08 11:16:17.757691+00:00,1636370177,5,"{'volatility': 4, 'old_volatility': None, 'secs_since_round_starts': 5}",nan,nan,,4.0
+03uv6wi9,w326f36h,10,0.25,Decision_volatility_changed,2021-11-08 11:16:19.362242+00:00,1636370179,7,"{'volatility': 5, 'old_volatility': 4, 'secs_since_round_starts': 7}",nan,nan,,5.0
+03uv6wi9,w326f36h,10,0.25,Decision_ends,2021-11-08 11:16:20.089572+00:00,1636370180,8,{'secs_since_round_starts': 8},nan,nan,,
+03uv6wi9,w326f36h,10,0.25,Trade_starts,2021-11-08 11:16:21.165725+00:00,1636370181,0,"{'currentPrice': 112.768, 'priceIndex': 10, 'secs_since_round_starts': 0}",112.768,10.0,,
+03uv6wi9,w326f36h,10,0.25,slider value changed,2021-11-08 11:16:23.711038+00:00,1636370183,2,"{'sliderValue': 0, 'currentPrice': 112.768, 'priceIndex': 10, 'secs_since_round_starts': 2}",112.768,10.0,0.0,
+03uv6wi9,w326f36h,10,0.25,show confirming dialog,2021-11-08 11:16:23.803636+00:00,1636370183,2,"{'currentPrice': 112.768, 'priceIndex': 10, 'secs_since_round_starts': 2}",112.768,10.0,,

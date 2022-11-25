@@ -1,31 +1,33 @@
 # Python script to extract subjects decisions data.
 
-# The altorithm goes as follows:
-# 1. Get data from original data file (data_2021-11-09_export.csv, for example)
-# 2. Delete unneeded variables.
-# 3. Get data for single subject, and
-# 4. Reshape (expand) prices at the end of each batch of 10 to long format of 2500 obs. per participant.
+"""
+The altorithm goes as follows:
+1. Get data from original data file (data_2021-11-09_export.csv, for example)
+2. Delete unneeded variables.
+3. Get data for single subject, and
+4. Reshape (expand) prices at the end of each batch of 10 to long format of 2500 obs. per participant.
 
-# 5. Importing events data (events_11_09_2021_21_07_19_export.csv, for example)
-# 6. Converting all mergCallinger variables to the same type and
-# 7. Merging to the main workfile,
-# 8. Defining conditions for dropdown and dropping data which are never observable because of that, and
-# 9. Saving the working file as workout.csv
-
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi,  {name}')  # Press Ctrl+F8 to toggle the breakpoint.
+5. Importing events data (events_11_09_2021_21_07_19_export.csv, for example)
+6. Converting all merger variables to the same type and
+7. Merging to the main workfile,
+8. Defining conditions for dropdown and dropping data which are never observable because of that, and
+9. Saving the working file as workout.csv
+"""
 
 # 0. import modules
 import pandas as pd
-import json
 import numpy as np
 from ast import literal_eval
 import itertools
 import ast
 import gc
 import tracemalloc
+import matplotlib.pyplot as plt
 import multiprocessing, random, sys, os, time
+
+import json
+from pandas.io.json import json_normalize
+#print(pd.__version__)
 
 # make columns display wide for convenience
 desired_width = 320
@@ -36,15 +38,30 @@ pd.set_option('display.max_columns', 10)
 # trace memory allocation
 tracemalloc.start()
 
-# 1. import the main data file, from app log (here, 'data_2021-11-09_export.csv', insert here correct name and address)
-reifdat_df = pd.read_csv("/home/albelix/Documents/Reiffeisen/data_2021-11-09_export.csv") #data_2021-10_5.csv") #, converters={'backend.1.player.data':CustomParser},header=0)
+"""
+1. import the main data file, from app log (instead of 'data_2021-11-09_export.csv', insert correct name 
+and address)
+    The main data file contains 
+        unique subject id (variable "participant_code"),
+        all price series ("data"), 
+        round number ("round"), 
+        volatilities selected in each round ("volatility")
+        selling or end of the round price ("exit_price") 
+    plus some other variables that we need to drop first. 
+    Adjust the variables list as needed.
+"""
+#reifdat_df = pd.read_csv("/home/albelix/media/data_2021-11-09_export.csv")
+reifdat_df = pd.read_csv("/home/albelix/Documents/Reiffeisen/data_2021-11-09_export.csv")
 
+
+"""
+2. drop inneeded columns by numbers
+"""
 # print column names and numbers
 colist = reifdat_df.columns.to_list()
 for (i, item) in enumerate(colist, start=0):
     print(i, item)
 
-# 2. drop inneeded columns by numbers
 print(colist)
 cols = [0,2,3,4,5,6,7,9,10,11,14,15,16,17,18,19,20,
         22,23,24,25,27,29,31,32,33,34,35,
@@ -62,7 +79,7 @@ colist = datdf.columns.to_list()
 for (i, item) in enumerate(colist, start=0):
     print(i, item)
 
-datdf=datdf.iloc[:,0:36]
+datdf=datdf.iloc[:,0:36] # drop further unneeded columns
 colist = datdf.columns.to_list()
 for (i, item) in enumerate(colist, start=0):
     print(i, item)
@@ -70,12 +87,12 @@ for (i, item) in enumerate(colist, start=0):
 print(datdf.head(10))
 print("dataframe created")
 
-# index for id value
+# create index for id value
 print(type(datdf['participant.code']))
 datdf['participant.code'] = datdf['participant.code'].astype(str)
 datdf['subject'] = datdf['participant.code'].rank(method='first').astype(int)
 
-# replacing unneeded prefixes in names
+# replace unneeded prefixes in names
 datdf.columns = datdf.columns.str.replace(".player", "")
 datdf.columns = datdf.columns.str.replace("backend.", "")
 datdf.columns = datdf.columns.str.replace("reif_survey_0.1", "surv")
@@ -84,18 +101,31 @@ for col in datdf.columns:
 print(datdf.head(10))
 print("all prepared")
 
-# 3. explode price lists to rows for a single participant
+
+"""
+3. Explode price lists to rows for a single participant: prepare data
+"""
+
 colist = datdf.columns.to_list()
 for (i, item) in enumerate(colist, start=0):
     print(i, item)
 shapshot1 = tracemalloc.take_snapshot()
 top_stats = shapshot1.statistics('lineno')
 
-# 4. exploding (reshaping) cycle
+"""
+4. exploding (reshaping) cycle
+    This cycle pick up by rounds three variables in wide format: 
+        "volatility" (fixed), 
+        "exit price" (end of period price, fixed) and 
+        "data" (current price, varying)
+    Expand them and the rest of variables in long form, and 
+    stacks observations for each round over each other.
+"""
+
 dfin = np.empty((2500, 10), dtype=object)   # create empty df to collect reshaped data
 d = datdf[datdf['subject'] == 1] # select data for single participant
 for count in range(1,11,1):  # create main cycle over rounds
-    colfull = [0, 1, 2, 3, 4, 4+(count-1)*3+1, 4+(count-1)*3+2, 4+(count-1)*3+3]   # pick up three variables in wide format
+    colfull = [0, 1, 2, 3, 4, 4+(count-1)*3+1, 4+(count-1)*3+2, 4+(count-1)*3+3]  # Pick up three variables in wide format
     print(colfull)
     colist = datdf.columns.to_list()
     dtm = d.iloc[:, colfull] # select colums by numbers and rename them to final names
@@ -108,19 +138,18 @@ for count in range(1,11,1):  # create main cycle over rounds
     print(dtm['round'])
     hdr = dtm.columns.values.tolist()
     # reshape and collect price values (data) per batch to a single expanded row
-    dtm['data'] = dtm['data'].apply(ast.literal_eval)  # command needed to read json object as list
+    dtm['data'] = dtm['data'].apply(ast.literal_eval)  # read json object as list
     dtnew = dtm.explode('data', ignore_index=False).reset_index()
     dtn = dtnew.values.tolist()
     # stack values for rounds 1:10
     if count==1:
         dfin[:250]=dtn
     else:
-        dfin[250*(count-1):250*count]=dtn  #dsingle.append(dtn) this works but fills horizontally
-        del [[dtm, dtnew]]  # clear temporary values
+        dfin[250*(count-1):250*count]=dtn
+        del [[dtm, dtnew]]  # clear temporary variables for future reuse
         gc.collect()
         dtm = pd.DataFrame()
         dtnew = pd.DataFrame()
-        print()
     hdr.insert(0,'obsno')
     shapshot2 = tracemalloc.take_snapshot()
     top_stats = shapshot2.statistics('lineno')
@@ -129,7 +158,7 @@ for count in range(1,11,1):  # create main cycle over rounds
     for stat in top_stats[:10]:
         print(stat)
 
-print("reach")
+print("reached end of cycle")
 dfsubj = pd.DataFrame(dfin, columns=hdr)
 print(type(dfsubj))
 # creating indices
@@ -137,167 +166,146 @@ dfsubj['TotalIndex'] = np.arange(len(dfsubj)) # total index of observation per p
 dfsubj["Index"] = dfsubj.groupby("round")["TotalIndex"].rank(method="first", ascending=True) # observation index per round
 # savind dataframe
 dfsubj.to_csv('data_subject.csv', index=False)
-getpartcode=dfsubj['participant.code'][0] # get code of the current participant
+getpartcode=dfsubj['participant.code'][0] # get label (code) of the current participant - JUST CHANGE THIS
 print("decisions database completed")
-
-# Commented code below is for reference purposes
-# # code to explode data for several participants incycle
-# #dfin=[]
-# dfin = np.empty((130000,62), dtype=object)   # insert here 2500*# of subjects, 10
-# #dsingle=[]
-# dsingle = np.empty((2500, 62), dtype=object)  # for dataset 3, use (2500,60)
-# d = {}
-# print("2getdata")
-# iter=0
-# print(len(datdf['subject'])+1)
-# for subj in range(1,len(datdf['subject'])+1):
-#     d[subj] = datdf[datdf['subject'] == subj]
-#     print(d[subj].iloc[:, 0:8].head(10))
-#     for count in range(1,11,1):
-#     #    print(count)
-#         cols = [0,1,2,3,4,5,5+(count-1)*3+1, 5+(count-1)*3+2, 5+(count-1)*3+3]
-#         My_list = list(range(36, 87)) # for dataset 3, use (36, 85)
-#         colfull = cols+My_list
-#     #   print(colfull)
-#         # dtmp=d[count]
-#         dtm = d[subj].iloc[:,colfull] #select colums by numbers dtmp.filter(colfull) # dtmp[np.intersect1d(dtmp.columns, colfull)]
-#         dtm = dtm.rename(columns={dtm.columns[4]: 'compnumber'})
-#         dtm = dtm.rename(columns={dtm.columns[5]: 'buckser'})
-#         dtm= dtm.rename(columns={dtm.columns[6]: 'volatility'})
-#         dtm= dtm.rename(columns={dtm.columns[7]: 'data'})
-#         dtm= dtm.rename(columns={dtm.columns[8]: 'exit.price'})
-#     #    print(dtm.iloc[:,0:9].head(10))
-#         #dtm['data'] = dtm['data'].apply(ast.literal_eval)  # command needed to read json object as list
-#         #dtm['data'] = dtm['data'].str.strip('()').str.split(',')
-#         #dtm = pd.concat([dtm, dtm['data'].apply(pd.Series)], axis=1)
-#         dtm['round'] = count
-#     #    print(dtm['round'])
-#         hdr = dtm.columns.values.tolist()
-#     #    print(dtm['data'])
-#     #    print("dtm data type is", type(dtm['data']))
-#         #dtm['data'] = dtm['data'].apply(literal_eval)  # command needed to read json object as list
-#     #    print("mission started")
-#         if count==1:
-#             dtm['data'] = dtm['data'].str.split(',')
-#             dtnew = dtm.explode('data', ignore_index=False).reset_index()
-#     #        print(dtnew.iloc[:,0:9].head(10))
-#             dtn = dtnew.values.tolist()
-#     #        print("dtn data type is", type(dtn))
-#         else:
-#             dtm['data'] = dtm['data'].str.split(',')
-#             #dtm['data'] = dtm['data'].str.strip('[]').astype(float)
-#             dtnew = dtm.explode('data', ignore_index=False).reset_index()
-#     #        print(dtnew.iloc[:,0:9].head(10))
-#             dtn = dtnew.values.tolist()
-#     #        print("dtn data type is", type(dtn))
-#     #    print("mission accomplished")
-#         if count==1:
-#             dsingle[:250]=dtn
-#         else:
-#             dsingle[250*(count-1):250*count]=dtn  #dsingle.append(dtn) this works but fills horizontally
-#     #        x, y = dsingle[-15:-1, 0:9], dsingle[-15:-1, 55:57]
-#     #        print(x,y)
-#     #        print("iteration")
-#             # dtm = None
-#             # dtnew = None
-#             del [[dtm, dtnew]]
-#             gc.collect()
-#             dtm = pd.DataFrame()
-#             dtnew = pd.DataFrame()
-#             print()
-#     if subj==1:
-#         dfin[:2500]=dsingle
-#     else:
-#         dfin[2500*(subj-1):2500*subj]=dsingle  # np.vstack([dfin, dsingle])
-#         hdr.insert(0,'obsno')
-#         shapshot2 = tracemalloc.take_snapshot()
-#         top_stats = shapshot2.statistics('lineno')
-#
-#         print("[ Top 10 ]")
-#         for stat in top_stats[:10]:
-#             print(stat)
-#
-# print("reach")
-# dfsubj = pd.DataFrame(dfin, columns=hdr)
-# # dfsubj.replace({'data': {'[': '', ']': ''}}, regex=True)
-# dfsubj.to_csv('data_stud52.csv', index=False) # old - data_33.csv
-# # instead of next line, I just drop extra [ ]  in excel
-# #dfsubj['data'] = dfsubj['data'].str.replace(r'[][]', '', regex=True) # to remove reminders of [ ]
-# print("decisions database completed")
-
-# block to check extra memory use
-# if __name__ == '__main__':
-#     manager = multiprocessing.Manager()
-#     state = manager.dict(list_size=5*1000*1000)  # shared state
-#     p = multiprocessing.Process(target=run_test, args=(state,))
-#     p.start()
-#     p.join()
-#     print('time to sort: %.3f' % state['time'])
-#     print('my PID is %d, sleeping for a minute...' % os.getpid())
-#     time.sleep(60)
-    # at this point you can inspect the running process to see that it
-    # does not consume excess memory
+type(dfsubj['Index'])
 
 
-# 5. Calling of event data
-reifev_df = pd.read_csv("/home/albelix/Documents/Reiffeisen/events_11_09_2021_21_07_19_export.csv").fillna("") # version 3: events_10_27_2021_3.csv"), v.5: events_212.csv"). fillna is needed, as otherwise creates ugly nan texts
+# summary statistics
+print(dfsubj['Index'].value_counts()) # distribution
+print(dfsubj['Index'].describe()) # summary statistics
+print (dfsubj['Index'].apply(type)) # var type
+
+
+
+"""
+5. Calling event data
+    This data file contains participant_code (variable to merge on) plus
+        events names ("name") for volatility choice (prefix "Decision") and trading decisions (prefix "Trade") 
+            decisions in trading periods are surrounded by marks "Trade_starts" and "Trade_ends"
+            and include labels of confirming dialog slider, sales decisions ("Sell") and sharp price changes 
+        prices at events ("current_date")
+        prices indices corresponding to each event ("price_index") 
+        values of slider ("slider_value", 0 for Sell, 3 for Keep)
+        time stamps
+        original logs of events as string values ("body")
+"""
+# reifev_df = pd.read_csv("/home/albelix/media/events_11_09_2021_21_07_19_export.csv",
+#                         decimal='.', converters={'Index': str.strip})
+reifev_df = pd.read_csv("/home/albelix/Documents/Reiffeisen/events_11_09_2021_21_07_19_export.csv",
+                        decimal='.', converters={'Index': str.strip})
 reifev_df['body'] = reifev_df['body'].apply(json.loads)
+# events_10_27_2021_3.csv"), v.5: events_212.csv").
+# use of fillna("") raises issues with strings, but may be needed, as otherwise creates ugly nan texts
 
-# renaming relevan variables
+# renaming relevant variables
 reifev_df = reifev_df.rename(columns={reifev_df.columns[0]: 'participant.code'})
 reifev_df = reifev_df.rename(columns={reifev_df.columns[2]: 'round'})
 reifev_df = reifev_df.rename(columns={reifev_df.columns[9]: 'data'})
 reifev_df = reifev_df.rename(columns={reifev_df.columns[10]: 'Index'})
 
-# 6. Convering them to proper types for merger
+"""
+6. Convering them to string types for merger
+"""
 reifev_df['participant.code'] = reifev_df['participant.code'].astype(str)
 reifev_df['round'] = reifev_df['round'].astype(str)
 reifev_df['data'] = reifev_df['data'].astype(str)
+reifev_df['Index'] = reifev_df['Index'].astype(str)
 
 # keep only one participant
-reifev = reifev_df.loc[reifev_df['participant.code']==getpartcode]
+reifev = reifev_df.loc[reifev_df['participant.code']==getpartcode].copy()
 
-# converting Index of obs within round to integer for merger
-reifev['Index'] = reifev['Index'].replace('', -1) # -1 for outcome selection stage
-reifev['Index'] = reifev['Index'].astype(int)
+# checking data types
+dataTypeSeries = reifev.dtypes
+print(dataTypeSeries)
+np.issubdtype(reifev['Index'].dtype, np.number) # checks if Index is pandas ds
+#reifev['Index'] = reifev.loc['Index'].replace("", -1) # -1 for outcome selection stage
+
 # (warnings here can be ignored. In fact, merger by Index are (most likely) not needed, as long as price values (data) are unique
 # within participant and round. To be on the safe side, we also use Index as the last merger key)
-reifev.to_csv('reifev.csv', index=False)
+reifev.to_csv('reifev.csv', index=False)  # save prepared events file
 
-# make sure values for merger in the main file are of same type
+
+# Final preparations of subject data file:
+# correct data type for one column:
+dfsubj.iloc[:,8] = pd.to_numeric(dfsubj.iloc[:,8], errors='coerce') # puts nan if data is non-numeric.
+# This is not problematic as long as such instances are not needed for further analysis
+
+# Make sure values for merger in the main file are of same type
 dfsubj['participant.code'] = dfsubj['participant.code'].astype(str)
 dfsubj['round'] = dfsubj['round'].astype(str)
 dfsubj['data'] = dfsubj['data'].astype(str)
-dfsubj['Index'] = dfsubj['Index'].astype(int)
+dfsubj['Index'] = dfsubj['Index'].astype(str)
 
-# 7. merging decisions and events
+"""
+7. merging decisions and events
+"""
 workdf = pd.merge(reifev, dfsubj,  how='outer', on=['participant.code', 'round', 'data', 'Index']).fillna(value=dfsubj, axis=1, inplace=False ) # bfill fills prev empty cells with next appropriate nonempty (for survey data)
 print("merger of events")
 
-workdf=workdf[workdf['Index'] % 10 == 0]
+# assigning proper types
 
 workdf['round'] = workdf['round'].astype(int)
-workdf['data'] = workdf['data'].astype(float)
-workdf['Index'] = workdf['Index'].astype(int)
-workdf.sort_values(by=['round', 'Index'], inplace=True)
+workdf['data'] = workdf['data'].astype(float) # this works once coerced  non-numeric chars.
+workdf['data'] = pd.to_numeric(workdf['data']) #.astype(float) - best way to do
+workdf['exit.price'] = pd.to_numeric(workdf['exit.price']) #.astype(float) - best way to do
+workdf['Index'] = workdf['Index'].astype(float)
+workdf['Index'] = workdf['Index'].astype('Int64')
+# checking datatypes for comparison columns
+print(workdf['data'].dtype)
+print(workdf['exit.price'].dtype)
 
-# 8. Creation of decision variables
-workdf["choice"]=0
-#workout=workdf.copy()
-# define end of round actions
-for i in range(len(workdf)): # range is 0:N-1
-    workdf['choice'] = (((workdf["name"] == "slider value changed") & (workdf['slider_value'] == 0)) | (workdf['exit.price'] == workdf['data'])).astype(int)
+# dropping out Index elements not divisible by 10 (not operated anyway).
+workdf=workdf[workdf['Index'] % 10 == 0]
 
-# define rows after end of the round to drop
-ix = (workdf['choice'].eq(1)
-      .cumsum()
-      .groupby(workdf['round'])
-      .apply(lambda x: x.loc[x.idxmax():]).index.get_level_values(1))
-workout=workdf.drop(ix,axis=0) # keeping only relevant rows
+# sorting data in proper order
+workdf.sort_values(by=['participant.code', 'round', 'Index'], inplace=True)
 
-# dropping extra observations
-# workout.drop_duplicates(subset = ("data"), keep = False, inplace = True)
+# rearranging dataset for ease of readability
+list(workdf.columns)
+columnsTitles = ['participant.code', 'round',  'Index',  'data', 'exit.price', 'name',
+                 'slider_value', 'clicked_volatility',  'volatility',  'owner__volatility', 'timestamp', 'unix_timestamp',
+                 'secs_since_round_starts', 'body', 'obsno', 'session.code', 'buckser',  'survey.clear', 'survey.strategy', 'survey.dropdown', 'surv.debcard1', 'surv.credcard1', 'surv.conscred1', 'surv.mortgcred1', 'surv.bankacc1', 'surv.bankdepo1', 'surv.bankinv1', 'surv.invest1', 'surv.debcard2', 'surv.credcard2', 'surv.conscred2', 'surv.mortgcred2', 'surv.bankacc2', 'surv.bankdepo2', 'surv.bankinv2', 'surv.invest2', 'surv.invgoals', 'surv.invgoals_other', 'surv.inv_horiz', 'surv.norm7_know', 'surv.norm8_risk', 'surv.norm9_debt', 'surv.norm10_saving', 'surv.norm11_invlott', 'surv.norm11down_invlott', 'surv.norm11up_invlott', 'surv.riskat', 'surv.management', 'surv.age', 'surv.gender', 'surv.field', 'surv.field_other', 'surv.family', 'surv.famember', 'surv.income', 'surv.budget', 'surv.budget_other', 'surv.satis', 'surv.expect', 'surv.trust', 'surv.freedom', 'surv.group.id_in_subsession', 'surv.subsession.round_number', 'subject', 'TotalIndex']
+workdf = workdf.reindex(columns=columnsTitles)
 
-# 9. Saving output
-workout.to_csv('workout.csv', index=False)
+
+"""
+8. Creation of decision variables
+"""
+
+# tagging sell point for each participant.code, range, exit.price==data
+workdf['Diff']=np.where( (workdf['data'] == workdf['exit.price']) & (workdf['name']!=''),'1','0')
+print(workdf['Diff'].describe())
+print(workdf['Diff'].dtype)
+print(workdf['Diff'].value_counts())
+
+# delete all obs after sale
+workdf['Diff'] = workdf['Diff'].astype(int)
+workdf=workdf.groupby(['participant.code','round'],sort=False).apply(lambda x  : x.reset_index(
+    drop=True).iloc[:x.reset_index(drop=True).Diff.idxmax()+1,:])
+workdf.reset_index(drop=True, inplace=True) # needs to reset index
+
+# checks # obs by groups and move variable to Choice
+colist = workdf.columns.to_list()
+for (i, item) in enumerate(colist, start=0):
+    print(i, item)
+movd=workdf['Diff']
+workdf.drop(labels=['Diff'], axis=1, inplace = True)
+workdf.insert(5, 'Choice', movd)
+
+
+# drop duplicates
+workout = workdf.drop_duplicates(subset=['participant.code','round','Index'], keep='last')
+g = workdf.groupby(['participant.code','round','Index'])
+size = g.size()
+var = size[size > 1] # autocorrect, was  just 'size[size>1]'
+print("here")
+print(var)
+
+
+"""
+9. Saving output file
+"""
+
+workout.to_csv('/home/albelix/media/workout.csv', index=False)
 print("mission accomplished")
