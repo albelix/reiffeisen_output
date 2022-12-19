@@ -26,6 +26,8 @@ from statsmodels.base.model import GenericLikelihoodModel
 from scipy.optimize import minimize
 import matplotlib.pyplot as plt
 import seaborn as sns
+import math
+from decimal import Decimal
 with np.errstate(divide='ignore'):
     np.float64(1.0) / 0.0
 
@@ -57,6 +59,7 @@ rr1['round'] = pd.to_numeric(rr1['round'])  # .astype(float) - best way to do
 rr1['round'] = rr1['round'].astype(int)  # Transform as numeric
 rr1['subject'] = 2  # rr1['participant.code'].rank(method='first').astype(int)  ADD TO FIX ID
 rr1['subject'] = rr1['subject'].astype(float).astype(int)  # Transform as numeric
+rr1['volatility'] = rr1['volatility'].astype(float)
 
 """
 2. Creates variables for utilities and probabilities from the data
@@ -100,6 +103,7 @@ rr1['lag_delta'] = rr1.groupby(["participant.code"])['delta'].shift(2).reset_ind
 rr1.info()
 # RoR normalized to 1
 rr1['q'] = rr1['data'] / 100  # .div(rr1['endow']) #.div(100)
+rr1['q'] = rr1['q'].astype(float)
 # Lag 3 data normalized to 1
 rr1['lq'] = rr1['lag_data'] / 100
 # delta from period to another normalized to one
@@ -116,7 +120,7 @@ print(tablout.describe())
 # redefine probs from normalized price q
 rr1['upvol'] = (
             rr1['q'] + rr1.groupby(["participant.code", 'round'])['data'].pct_change().rolling(2).std() * (
-            252 ** 0.5))  # 1+
+            252 ** 0.5))  # 1+ was rolling(2)
 # lower volatility annualized (mohthly - just rescaling)
 rr1['downvol'] = (
             rr1['q'] - rr1.groupby(["participant.code", 'round'])['data'].pct_change().rolling(2).std() * (
@@ -155,19 +159,54 @@ print(onesell.describe())
 rr1['dq_avg'] = rr1.groupby(["participant.code", "round"])['dq'].rolling(2).mean().shift(1).reset_index(
     drop=True)
 # utilities of outcomes/r/r
-rr1['xup'] = rr1['q'] + abs(rr1['dq'])
-rr1['xdown'] = rr1['q'] - abs(rr1['dq'])  # pd.Series(np.zeros(rr1.shape[0]))
-rr1.loc[rr1['delta'] >= -50, 'xdown'] = rr1.q - rr1.dq
-rr1.loc[rr1['delta'] < -50, 'xdown'] = rr1.q - rr1.dq_avg
+# rr1['xup'] = rr1['q'] + abs(rr1['dq'])
+# rr1['xdown'] = rr1['q'] - abs(rr1['dq'])  # pd.Series(np.zeros(rr1.shape[0]))
+# rr1['negvol']=rr1['volatility']*-1
+# rr1['negvol'] = rr1['negvol'].astype(float)
+rr1['xup0'] = rr1['q'] * (1 + round(rr1['volatility'],3))
+rr1['xdown0'] = rr1['q'] * (1 - round(rr1['volatility'],3))
+def valueup(rr1):
+   if rr1['xup0'] >= 1 :
+      return rr1['xup0']-1
+   if rr1['xup0'] < 1:
+      return np.abs(rr1['xup0']-1)
+rr1['xup'] = rr1.apply(valueup, axis=1)
+def valuedown(rr1):
+   if rr1['xdown0'] >= 1 :
+      return rr1['xdown0']-1
+   if rr1['xdown0'] < 1:
+      return np.abs(rr1['xdown0']-1)
+rr1['xdown'] = rr1.apply(valuedown, axis=1)
+rr1['xupm'] = rr1['xup']
+rr1['xdownm'] = rr1['xdown']
+rr1.loc[(rr1['xup0'] < 1) & (rr1['xdown0'] < 1), 'xup'] = np.NaN
+rr1.loc[(rr1['xup0'] < 1) & (rr1['xdown0'] < 1), 'xdown'] = np.NaN
+rr1.loc[(rr1['xup0'] >= 1) | (rr1['xdown0'] >= 1), 'xupm'] = np.NaN
+rr1.loc[(rr1['xup0'] >= 1) | (rr1['xdown0'] >= 1), 'xdownm'] = np.NaN
+
+
+pd.Series(np.zeros(rr1.shape[0]))
+
+# rr1.loc[rr1['delta'] >= -50, 'xdown'] = rr1.q - rr1.dq
+# rr1.loc[rr1['delta'] < -50, 'xdown'] = rr1.q - rr1.dq_avg
 rdif = rr1['xup'] - rr1['xdown']
-tablarout = rr1.loc[:, rr1.columns.isin(list(['round', 'volatility', 'exit.price', 'Index', 'data',
-                                              'q', 'dq', 'dq_avg', 'xup', 'xdown', 'delta', 'rdif']))].copy()
 print(rdif.describe())
+
+tablarout = rr1.loc[:, rr1.columns.isin(list(['volatility', 'round', 'Index', 'subject', 'data', 'delta',
+                                              'q', 'dq', 'dq_avg', 'xup0', 'xup', 'xdown0', 'xdown',
+                                              'xupm', 'xdownm',
+                                              'delta', 'probup', 'probdown', 'Choice', 'numreac' ]))].copy()
+
 tablarout
 print(tablarout.describe())
 
 counts = pd.Series(rdif).value_counts().reset_index().sort_values('index').reset_index(drop=True)
 print(counts)
+
+to = tablarout.to_numpy() # convert df to ndarray
+long=len(to)  #rows length of array
+# newcol=to[to[0:long,10]-1, None]
+# to=np.append[to, newcol,1]
 
 """
 3. Calculates expected utilities (EU) and log-likelihoods (ML)
@@ -198,23 +237,30 @@ print("dataset prepared")
 4. Main estimation algorithm: first step
 """
 
-from sklearn import preprocessing
 
+from sklearn import preprocessing
 parameters: ndarray = np.array([])
 
 # Individual subject (automatically fulfilled)
 indiv = 2
 
 # Selecting data for the chosen subject
-touss = rr1[(rr1['subject'] == indiv) & rr1['round']<=3]
+
+
+touse = rr1[(rr1['subject'] == indiv)]
 # tousebase = touss  # Kept for comparison purposes at the end of algorithm
 
 # Selection of needed columns
-tou = touss[['volatility', 'round', 'Index', 'subject', 'data', 'delta', 'xup',
-             'xdown', 'probup', 'probdown', 'q', 'dq',  'Choice','numreac']].astype(np.float64)
-tou['volatility'].value_counts()
-# tou = tou[~tou.isin([np.nan, np.inf, -np.inf]).any(1)]
+touss = touse[['volatility', 'round', 'Index', 'subject', 'data', 'delta', 'q', 'dq', 'dq_avg', 'xup0',
+              'xdown0', 'delta', 'probup', 'probdown', 'Choice', 'numreac']].astype(np.float64)
+touss['Indicator'] = np.where(touss['xup0'] >= 1, 1,0)
+touss['Indicator'].astype(bool)
+str(touss['Indicator'])
 
+tou = touss[(touss['round'] <= 5)]
+# tou = tou[~tou.isin([np.nan, np.inf, -np.inf]).any(1)]
+str(tou)
+long=len(tou)
 """
 4.1. Defining priors
 """
@@ -223,7 +269,7 @@ voles = [0.01, 0.05, .10, .15, .20, .25, .30, .35, .40, .45, .50]  # volatilitie
 #rvec = [3, 2.5, 2, 1.6, 1.2, 1, .8, .6, .4, .2, .05]  # prior risk aversion
 rvec = [4.5,3,2.4,1.6,.8,.3,-.3,-.8,-1.6,-2.2,-3]  # prior
 # risk aversion
-volat = tou.iloc[0,0]
+volat = tou.loc[0,'volatility'].copy()
 print("getting risk aversion corresponding to prior volatility")
 print(volat)
 z = voles.index(volat)  # index of prior risk aversion
@@ -232,25 +278,34 @@ print("prior risk aversion r0 corresponds to chosen volatility")
 print(r0)
 # tolerance
 # tou['belowprice'] = tou[tou['q']<1]
-tou['belowprice'] = np.where(tou['q']<1, tou['q'],0)
+tou['belowprice'] = np.where(tou['q']<1, tou['q'],0).copy()
 #tou['meannum'] = tou.groupby(["round"])['q'].mean().reset_index(drop=True)
 theta0 = 1-tou['belowprice'].mean()
 print("prior tolerance to dropdown is mean duration of holdings (following dropdown)")
 print(theta0)
 # noise
-tou['EX'] = (1 - np.exp(-r0 * tou['xup']))/r0 * tou['probup'] + (1 - np.exp(-r0 * tou['xup']))/r0 * tou[
-    'probdown']
-tou['mainlog'] = np.log( (tou['EX'] + theta0 *(1-tou['belowprice']))/ (1 - np.exp(-r0 * tou['q']))/r0)
-print(tou[['belowprice', 'EX', 'mainlog', 'numreac']].describe())
-tou['mainlog'].loc[(tou['mainlog'] < 0)] = 0.00001  # correction in case of very high theta
-mainU = tou['mainlog']
-nu0 = np.std(mainU)
+# tou['EX'] = (1 - np.exp(-r0 * tou['xup']))/r0 * tou['probup'] + (1 - np.exp(-r0 * tou['xup']))/r0 * tou[
+#     'probdown']
+# tou['mainlog'] = np.log( (tou['EX'] + theta0 *(1-tou['belowprice']))/ (1 - np.exp(-r0 * tou['q']))/r0)
+# print(tou[['belowprice', 'EX', 'mainlog', 'numreac']].describe())
+# tou['mainlog'].loc[(tou['mainlog'] < 0)] = 0.00001  # correction in case of very high theta
+# mainU = tou['mainlog']
+# nu0=np.std(mainU)
+nu0 = np.std(tou['volatility'])
 print("prior stdev is that of non-normalized values of expected utility")
 print(nu0)
+# loss aversion
+lamb0=2
 
-theta_start = np.array([theta0, nu0, r0])
+# theta_start = np.array([r0, nu0, theta0])
+# params = theta_start
+# print(params)
+
+# Omitting theta
+theta_start = np.array([r0, nu0, lamb0])
 params = theta_start
 print(params)
+
 
 # tou['utmax'] = None
 # tou.loc[:,'utmax'] = np.amax(tou['xup']) + 0.001
@@ -276,27 +331,141 @@ tou=tou.reset_index()
 """
 4.2. Define log-likelihood
 """
+from sklearn import preprocessing
+
 # Set up ML model
 def neg_loglike(params):
-    thet = params[0]
+#    thet = params[2]
+    r = params[0]
     nu = params[1]
-    r = params[2]
-    # lamb = params[3]
-    # long=np.count_nonzero(to[:,1] == 1)
+    lossa = params[2]
 
+    # lamb = params[3]
+    # long=np.count_nonzero(['qto[:,1] == 1)
 
     # tou['utmax']=np.amax(tou['xup'])+0.01
     # y = (np.log(
     #     (((1 - np.exp(- r * tou['xup'])) / (1 - np.exp(-r * utmax))) * tou['probup'] +
     #      ((1 - np.exp(-r * tou['xdown'])) / (1 - np.exp(-r * utmax))) * tou['probdown']) / tou['q']) -
     #      thet*tou['numreac']) / (np.sqrt(2) * nu) # adjust for utility in 'q'
-    y = (np.log(
-        (((1 - np.exp(- r * tou['xup'])) / r) * tou['probup'] +  # + lamb *
-         ((1 - np.exp(- r * tou['xdown'])) / r) * tou['probdown']) / (1 - np.exp(- r * tou['q'])) / r)) \
-        - thet / tou['EX'] * (1 - tou['belowprice']) / (np.sqrt(2) * nu)
 
     # CARA
     # y = (np.log(
+    #     (((1 - np.exp(- r * tou['xup'])) / r) * tou['probup'] +  # + lamb *
+    #      ((1 - np.exp(- r * tou['xdown'])) / r) * tou['probdown']) / ((1 - np.exp(- r * tou['q'])) / r)) ) / (np.sqrt(2) * nu)
+         #- thet / tou['EX'] * (1 - tou['belowprice']) \
+
+    # CRRA
+    # y = (np.log(
+    #     ((-lossa*tou['xup0']**(1-r))/(1-r) * tou['probup'] +
+    #          (-lossa*tou['xdown0']**(1-r)) /(1-r) * tou['probdown'])/
+    #          ((tou['q']**(1-r)) / (1-r))) / (np.sqrt(2) * nu))
+
+# works???
+    if tou[tou['Indicator']==1].any().any():
+        y = (np.log(
+            (((tou['xup0']-1) ** (1 - r)) / (1 - r) * tou['probup'] +
+             ((tou['xdown0']-1) ** (1 - r)) / (1 - r) * tou['probdown']) /
+            (((tou['q']-1) ** (1 - r)) / (1 - r))) / (np.sqrt(2) * nu))
+    elif tou[tou['Indicator']==0].any().any():
+        y = (np.log(
+             ((-lossa * -((1-tou['xup0']) ** (1 - r)) / (1 - r)) * tou['probup'] +
+              (-lossa * -((1-tou['xdown0']) ** (1 - r)) / (1 - r)) * tou['probdown']) /
+             ((-(1-tou['q']) ** (1 - r)) / (1 - r))) / (np.sqrt(2) * nu))
+
+    # y = np.where(tou[tou['Indicator'] == 1], (np.log(
+    #     (np.dot((math.pow(tou['xup'],(1 - r)) / (1 - r), tou['probup']) +
+    #      np.dot((math.pow(tou['xdown'],(1 - r)) / (1 - r), tou['probdown'])))) /
+    #     (math.pow(tou['q'],(1 - r)) / (1 - r))) / (np.sqrt(2) * nu)),
+    #              (np.log(
+    #              (np.dot(np.dot(-lossa, math.pow(-tou['xupm'],(1 - r)) / (1 - r)), tou['probup']) +
+    #               (np.dot(np.dot(-lossa, math.pow(-tou['xdownm'],(1 - r)) / (1 - r)), tou['probdown']))) /
+    #              (math.pow(tou['q'],(1 - r)) / (1 - r))) / (np.sqrt(2) * nu)))
+
+
+    # y = np.select([tou[tou['Indicator'] == 1], tou[tou['Indicator'] == 0]], [(np.log(
+    #         ((tou['xup'] ** (1 - r)) // (1 - r) * tou['probup'] +
+    #          (tou['xdown'] ** (1 - r)) // (1 - r) * tou['probdown']) //
+    #         ((tou['q'] ** (1 - r)) // (1 - r))) // (np.sqrt(2) * nu)),
+    #         (np.log(
+    #                  ((-lossa * (-tou['xupm'] ** (1 - r)) // (1 - r)) * tou['probup'] +
+    #                   (-lossa * (-tou['xdownm'] ** (1 - r)) // (1 - r)) * tou['probdown']) //
+    #                  ((tou['q'] ** (1 - r)) // (1 - r))) // (np.sqrt(2) * nu))]).astype(np.float64)
+
+    # def posit(params):
+    #     r = params[0]
+    #     nu = params[1]
+    #     return (np.log(
+    #         ((tou['xup'] ** (1 - r)) / (1 - r) * tou['probup'] +
+    #          (tou['xdown'] ** (1 - r)) / (1 - r) * tou['probdown']) /
+    #         ((tou['q'] ** (1 - r)) / (1 - r))) / (np.sqrt(2) * nu))
+    #
+    # def negat(params):
+    #     r = params[0]
+    #     nu = params[1]
+    #     lossa = params[2]
+    #     return (np.log(
+    #                  ((-lossa * (-tou['xup'] ** (1 - r)) / (1 - r)) * tou['probup'] +
+    #                   (-lossa * (-tou['xdown'] ** (1 - r)) / (1 - r)) * tou['probdown']) /
+    #                  ((tou['q'] ** (1 - r)) / (1 - r))) / (np.sqrt(2) * nu))
+    # # tou = tou.to_numpy()
+    # y = np.piecewise(tou, [tou[tou['Indicator'] == 1], tou[tou['Indicator'] == 0]],
+    #                   [posit(params), negat(params)])
+#    return Y
+
+#np.select([tou[tou['xup0'] >= 1], tou[tou['xup0'] < 1]], [
+# y = np.where(tou[tou['xup0'] >= 1], (np.log(
+    #     (math.pow(tou['xup'], (1 - r)) / (1 - r) * tou['probup'] +
+    #      math.pow(tou['xdown'], (1 - r)) / (1 - r) * tou['probdown']) /
+    #     (math.pow(tou['q'], (1 - r)) / (1 - r))) / (np.sqrt(2) * nu)),
+    #              (np.log(
+    #                  ((-lossa * -math.pow(tou['xupm'], (1 - r)) / (1 - r)) * tou['probup'] +
+    #                   (-lossa * -math.pow(tou['xdownm'], (1 - r)) / (1 - r)) * tou['probdown']) /
+    #                  (math.pow(tou['q'], (1 - r)) / (1 - r))) / (np.sqrt(2) * nu)))
+
+# y = np.where(tou[tou['xup0'] >= 1], (np.log(
+#     (np.dot((tou['xup']) ** (1 - r) / (1 - r), tou['probup']) +
+#      (np.dot(tou['xdown']) ** (1 - r) / (1 - r)), tou['probdown']) /
+#     ((tou['q']) ** (1 - r)) / (1 - r)) / (np.sqrt(2) * nu)),
+#              (np.log(
+#                  (np.dot(-lossa, -np.dot((tou['xupm']) ** (1 - r) / (1 - r)), tou['probup']) +
+#                   (np.dot(-lossa, -np.dot(tou['xdownm'] ** (1 - r) / (1 - r), tou['probdown'])))) /
+#                  ((tou['q']) ** (1 - r)) / (1 - r)) / (np.sqrt(2) * nu)))
+
+# if tou[tou['xup0'] >=1 ].bool():
+    #    y = (np.log(
+    #          (((tou['xup'])**(1-r) / (1-r) * tou['probup'] +
+    #           ((tou['xdown'])**(1-r)) /(1-r) ) * tou['[probdown'])/
+    #          ((tou['q'])**(1-r)) / (1-r))) / (np.sqrt(2) * nu)
+    # elif tou[tou['xup0']<1].bool():
+    #     y = (np.log(
+    #         ((-lossa*-(tou['xupm']) ** (1 - r) / (1 - r) * tou['probup'] +
+    #           ((-lossa*-tou['xdownm']) ** (1 - r)) / (1 - r)) * tou['[probdown']) /
+    #         ((tou['q']) ** (1 - r)) / (1 - r))) / (np.sqrt(2) * nu)
+#    return y
+    # y = np.piecewise(to, [to[:,13]>0, to[:,17]>0],
+    #              [(np.log(
+    #                  (((to[:,13])**(1-r) / (1-r) * tou[:, 9] +
+    #                   ((tou[:,14])**(1-r)) /(1-r) ) * tou[:,10])/
+    #                  ((tou[:,7])**(1-r)) / (1-r))) / (np.sqrt(2) * nu),
+    #               (np.log(
+    #                   -lossa * -(((to[:, 17]) ** (1 - r) / (1 - r) * tou[:, 9] +
+    #                     -lossa * -((tou[:, 18]) ** (1 - r)) / (1 - r)) * tou[:, 10]) /
+    #                   ((tou[:, 7]) ** (1 - r)) / (1 - r))) / (np.sqrt(2) * nu)
+    #               ])
+
+
+                 # y=[(np.log((((1 - np.exp(- r * to[0:long,6])) / r) * to[0:long,8] +
+                 #            ((1 - np.exp(- r * to[0:long,7])) / r) * to[0:long,9]) / to[0:long,10]) - thet *
+#                     to[0:long,16]) / (np.sqrt(2) * nu),
+#                   (np.log((((1 - np.exp(- r * to[0:long,6])) / r) * to[0:long,8] +
+#                             (lamb * ((1 - np.exp(- r * to[0:long,7])) / r)) * to[0:long,9]) / to[
+#                                0:long,10]) - thet * to[0:long,16]) / (np.sqrt(2) * nu),
+#                   (np.log((lamb * ((1 - np.exp(- r * to[0:long,6])) / r) * to[0:long,8] +
+#                             (lamb * ((1 - np.exp(- r * to[0:long,7])) / r)) * to[0:long,9]) / to[
+#                                0:long,10]) - thet * to[0:long,16]) / (np.sqrt(2) * nu)])
+
+# y = (np.log(
     #     (((tou['xup']) ** (1 - r) / (1 - r) * tou['probup'] +
     #       ((tou['xdown']) ** (1 - r)) / (1 - r)) * tou['probdown']) /
     #     ((tou['q']) ** (1 - r)) / (1 - r))) + thet / tou['EX'] * (1 - tou['belowprice']) / (
@@ -422,19 +591,19 @@ def neg_loglike(params):
     # forget about lambda
     #     (((1 - np.exp(- r * tou['xup'])) / (1 - np.exp(-r * utmax))) * tou['probup'] + lamb * (
     #             (1 - np.exp(-r * tou['xdown'])) / (1 - np.exp(-r * utmax))) * tou['probdown']) / tou['q']) - thet ) / (np.sqrt(2) * nu) # adjust for utility in 'q'
-    Y = preprocessing.scale(y)  # standardize data
+# def fullneg_loglike(Y):
     #    mu = np.log(norm.cdf(Y) * tou['dec0'] + (1 - tou['dec0']) * (1 - norm.cdf(Y)))
+    Y = preprocessing.scale(y)  # standardize data
     mu = np.log(norm.cdf(Y)) * tou['Choice'] + (1 - tou['Choice']) * np.log(1 - norm.cdf(Y))
     return -1 * mu.sum()
 
 print("defined")
 # Optimize the log-likelihood over our parameters using minimize from python's scipy.optimize package:
-from sklearn import preprocessing
 
 # Define prior volatility of number of sales
 # utilities of outcomes
 # ML Maximization, first iteration
-theta_start = np.array([theta0, nu0, r0])
+theta_start = np.array([r0, nu0, lamb0]) # theta0,
 params = theta_start
 res = minimize(neg_loglike, theta_start, method='L-BFGS-B', options={'disp': True})
 # print(res)
@@ -446,12 +615,14 @@ print(parameters)
 """
 5. Repeats the iterations for subsequent rounds and collects output
 """
-for iter in range(2, 11):
+for iter in range(6, 11):
     # Step n: take values from previous round's estimates
-    touse = tou[(tou['subject'] == indiv) & (tou['round'] <= iter)]  # select data
+    tou1 = touss[(touss['round'] <= iter)]
+#    tou = touss[(touss['subject'] == indiv) & (touss['round'] <= iter)]  # select data
     # tou = touss[['volatility', 'round', 'Index', 'subject', 'data', 'delta', 'xup', 'xdown', 'probup',
     #              'probdown', 'q', 'dq',  'Choice', 'numreac', 'belowprice', 'EX', 'mainlog']]
-    touse = touse[~touse.isin([np.nan, np.inf, -np.inf]).any(1)]
+    tou1 = tou1[~tou1.isin([np.nan, np.inf, -np.inf]).any(1)]
+    tou1 = tou1.replace([np.inf, -np.inf], np.nan)
     # utmax = np.amax(tou['xup']) + 0.01
 
     #    lamb = 1
@@ -460,11 +631,11 @@ for iter in range(2, 11):
     # print( (1 - np.exp(-r0 * tou['xdown']))/r0 )
 
 #    touse['EX'] = (1 - np.exp(-par[2] * touse['xup'])) / par[2]* touse['probup'] + (1 - np.exp(-par[2] *
-    touse['EX'] = (((touse['xup']) ** (1 - par[2]) / (1 -  par[2]) * touse['probup'] +
-              ((touse['xdown']) ** (1 -  par[2])) / (1 -  par[2])) * touse['probdown'])
-    touse['mainlog'] = np.log(
-        (touse['EX'] + par[0] * (1 - touse['belowprice'])) / (1 - np.exp(-par[2] * touse['q'])) / par[2])
-    print(touse[['belowprice', 'EX', 'mainlog', 'numreac']].describe())
+#     touse['EX'] = (((touse['xup']) ** (1 - par[0]) / (1 -  par[0]) * touse['probup'] +
+#               ((touse['xdown']) ** (1 -  par[0])) / (1 -  par[0])) * touse['probdown'])
+#     touse['mainlog'] = np.log(
+#         (touse['EX'] + par[0] * (1 - touse['belowprice'])) / (1 - np.exp(-par[0] * touse['q'])) / par[1])
+#     print(touse[['belowprice', 'EX', 'mainlog', 'numreac']].describe())
 
 
     # tou['EX'] =  (1 - np.exp(-par[2] * tou['xup']))/par[2]  * tou['probup'] + (1 - np.exp(-par[2] * tou['xup']))/par[2] * tou['probdown']
@@ -487,10 +658,10 @@ for iter in range(2, 11):
 
     #  Set up ML model for iteration
     def neg_loglikelihood(params):
-        thet = params[0]
+        # thet = params[2]
         nu = params[1]
-        r = params[2]
-        # lamb = 1  # params[3]
+        r = params[0]
+        lossa = params[2]
 
         #tou['utmax'] = np.amax(tou['xup']) + 0.1
         print("r")
@@ -501,25 +672,37 @@ for iter in range(2, 11):
         #     (((1 - np.exp(- r * tou['xup'])) / (1 - np.exp(-r * utmax))) * tou['probup'] + # + lamb *
         #          ((1 - np.exp(-r * tou['xdown'])) / (1 - np.exp(-r * utmax))) * tou[
         #          'probdown']) / tou['q']) - thet*tou['numreac']) / (np.sqrt(2) * nu)
-        # cara
-        y = (np.log(
-            (((1 - np.exp(- r * touse['xup'])) / r) * touse['probup'] +  # + lamb *
-             ((1 - np.exp(- r * touse['xdown'])) / r) * touse['probdown']) / (1 - np.exp(- r * touse['q'])) / r)) \
-            - thet/touse['EX'] * (1 - touse['belowprice']) / (np.sqrt(2) * nu)
+        # # cara
+        # y = (np.log(
+        #     (((1 - np.exp(- r * touse['xup'])) / r) * touse['probup'] +  # + lamb *
+        #      ((1 - np.exp(- r * touse['xdown'])) / r) * touse['probdown']) / ((1 - np.exp(- r * touse[
+        #         'q'])) / r)) ) / (np.sqrt(2) * nu)
+            # - thet/touse['EX'] * (1 - touse['belowprice'])
         # CRRA
         # y = (np.log(
         #     (((touse['xup']) ** (1 - r) / (1 - r) * touse['probup'] +
         #       ((touse['xdown']) ** (1 - r)) / (1 - r)) * touse['probdown'])  /
         #     ((touse['q']) ** (1 - r)) / (1 - r))) + thet/touse['EX'] * (1 - touse['belowprice']) / (
         # np.sqrt(2) * nu)
+        if tou1[tou1['Indicator']==1].any().any():
+            y = (np.log(
+                (((tou1['xup0']-1) ** (1 - r)) / (1 - r) * tou1['probup'] +
+                 ((tou1['xdown0']-1) ** (1 - r)) / (1 - r) * tou1['probdown']) /
+                (((tou1['q']-1) ** (1 - r)) / (1 - r))) / (np.sqrt(2) * nu))
+        elif tou1[tou1['Indicator']==0].any().any():
+            y = (np.log(
+                ((-lossa * -((1 - tou1['xup0']) ** (1 - r)) / (1 - r)) * tou1['probup'] +
+                 (-lossa * -((1 - tou1['xdown0']) ** (1 - r)) / (1 - r)) * tou1['probdown']) /
+                ((-(1 - tou['q']) ** (1 - r)) / (1 - r))) / (np.sqrt(2) * nu))
+
         Y = preprocessing.scale(y)
-        mu = np.log(norm.cdf(Y)) * touse['Choice'] + (1 - touse['Choice']) * np.log(1 - norm.cdf(Y))
+        mu = np.log(norm.cdf(Y)) * tou1['Choice'] + (1 - tou1['Choice']) * np.log(1 - norm.cdf(Y))
         #        mu = np.log(norm.cdf(Y) * tou['dec1'] + (1 - tou['dec1']) * (1 - norm.cdf(Y)))
         return -1 * mu.sum()
 
 
     # ML Maximization for iteration
-    touse = touse[~touse.isin([np.nan, np.inf, -np.inf]).any(1)]
+#    touse = touse[~touse.isin([np.nan, np.inf, -np.inf]).any(1)]
     param_start = np.array([par])
     print('prior vector')
     print(theta_start)
@@ -536,22 +719,26 @@ for iter in range(2, 11):
 """
 
 x = np.linspace(0.01, 2, 200)
-rpar = par[2]
+rpar = par[0]
 # CARA
-y = (1 - np.exp(-rpar * x)) / rpar
-# CRRA
-# y = x**(1-rpar) / (1-rpar)
+#y = (1 - np.exp(-rpar * x)) / rpar
+#CRRA
+y = x**(1-rpar) / (1-rpar)
 plt.plot(x, y)
 plt.show()
 
-print("Tolerance to chocks (the lower is estimate <0 the higher is tolerance")
+#print("Coefficient of risk aversion CARA (r<0 risk seeking, r>0 risk averse)")
+print("Coefficient of risk aversion CRRA (r<0 risk seeking, r>0 risk averse)")
 print(par[0].round(2))
 
 print("Reliability of estimate (the closer to 0 the better) ")
 print(par[1].round(2))
 
-print("Coefficient of risk aversion (r<0 risk seeking, r>0 risk averse)")
+#print("Tolerance to chocks (the lower is estimate <0 the higher is tolerance")
+print("Loss aversion (the larger is estimate >0 the higher is loss aversion")
 print(par[2].round(2))
+
+
 
 # volatilities and dropdowns by this individual
 print(onesell)
