@@ -49,6 +49,7 @@ and address)
         selling or end of the round price ("exit_price") 
     plus some other variables that we need to drop first. 
     Adjust the variables list as needed.
+    Insert the number of participant at line 127
 """
 #reifdat_df = pd.read_csv("/home/albelix/media/data_2021-11-09_export.csv")
 reifdat_df = pd.read_csv("/home/albelix/Documents/Reiffeisen/data_2021-11-09_export.csv")
@@ -123,7 +124,7 @@ top_stats = shapshot1.statistics('lineno')
 """
 
 dfin = np.empty((2500, 10), dtype=object)   # create empty df to collect reshaped data
-d = datdf[datdf['subject'] ==4] # select data for single participant
+d = datdf[datdf['subject'] == 1] # select data for single participant
 for count in range(1,11,1):  # create main cycle over rounds
     colfull = [0, 1, 2, 3, 4, 4+(count-1)*3+1, 4+(count-1)*3+2, 4+(count-1)*3+3]  # Pick up three variables in wide format
     print(colfull)
@@ -163,6 +164,7 @@ dfsubj = pd.DataFrame(dfin, columns=hdr)
 print(type(dfsubj))
 # creating indices
 dfsubj['TotalIndex'] = np.arange(len(dfsubj)) # total index of observation per participant, python format
+dfsubj["Index"] = dfsubj.groupby("round")["TotalIndex"].rank(method="first", ascending=True) # observation index per round
 dfsubj["Index"] = dfsubj.groupby("round")["TotalIndex"].rank(method="first", ascending=True) # observation index per round
 # savind dataframe
 dfsubj.to_csv('data_subject.csv', index=False)
